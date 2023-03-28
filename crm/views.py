@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 
 from crm.models import Product, Sale, Company
-from crm.serializer import ProductSerializer, SaleSerializer, CompanySerializer, CompanyRevenueSerializer
+from crm.serializer import ProductSerializer, SaleSerializer, CompanySerializer
 
 #filters
 from rest_framework.filters import OrderingFilter, SearchFilter

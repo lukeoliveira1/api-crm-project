@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 
-from crm.views import ProductViewSet, SaleViewSet, CompanyViewSet, CompanyTotalRevenueView
+from crm.views import ProductViewSet, SaleViewSet, CompanyViewSet
 #routers
 
 router = routers.DefaultRouter()
