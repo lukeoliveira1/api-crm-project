@@ -146,13 +146,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     #filters
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    #authentication, permissions and authorization
-     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated', 
-        'rest_framework.permissions.IsAdminUser', 
-        'rest_framework.permissions.DjangoModelPermissions',
-    ],
+    #authentication, permissions and authorization globally
+    #  'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated', 
+    #     'rest_framework.permissions.DjangoModelPermissions',
+    # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication' 
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }

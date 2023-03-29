@@ -2,13 +2,14 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 
 from crm.models import Product, Sale, Company
-from crm.serializer import ProductSerializer, SaleSerializer, CompanySerializer, CompanyFinancialSerializer
+from crm.serializer import ProductSerializer, SaleSerializer, CompanySerializer, CompanyFinancialSerializer, UserSerializer
 
 #filters
 from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 #authentication and authorization
+from django.contrib.auth.models import User
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
@@ -83,7 +84,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     ordering_fields = ['id', 'company_name']
     search_fields = ['company_name']
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
 class CompanyFinancialViewSet(viewsets.ReadOnlyModelViewSet):
 
@@ -93,3 +94,27 @@ class CompanyFinancialViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAdminUser]
+
+    def check_permissions(self, request):
+        """
+        Sobrescreve o método check_permissions() da APIView para
+        adicionar verificação de autenticação à view.
+        """
+        super().check_permissions(request)
+        if not request.user.is_authenticated:
+            self.permission_denied(
+                request, message="Você precisa estar autenticado para acessar esta view."
+            )
+        elif request.user.username != 'admin':
+            self.permission_denied(
+                request, message="Você não tem permissão para acessar esta view."
+            )
+
+class UserViewSet(viewsets.ModelViewSet):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]

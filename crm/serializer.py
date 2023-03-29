@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from crm.models import Product, Sale, Company
+from django.contrib.auth.models import User
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,18 @@ class CompanyFinancialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = ('total_revenue',)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            email=validated_data['email'],
+            username=validated_data['username']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
