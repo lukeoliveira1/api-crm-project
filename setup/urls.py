@@ -21,13 +21,14 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 
-from crm.views import ProductViewSet, SaleViewSet, CompanyViewSet
+from crm.views import ProductViewSet, SaleViewSet, CompanyViewSet, CompanyFinancialViewSet
 #routers
 
 router = routers.DefaultRouter()
 router.register('products', ProductViewSet, basename='products')
 router.register('sales', SaleViewSet, basename='sales')
 router.register('companies', CompanyViewSet, basename='companies')
+router.register('companies-financial', CompanyFinancialViewSet, basename='companies-financial')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
