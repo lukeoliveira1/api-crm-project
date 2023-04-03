@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from crm.models import Product, Sale, Company
@@ -34,17 +34,14 @@ class SaleViewSet(viewsets.ModelViewSet):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # list/ retrieve(list pk=id) / update /  
     def create(self, request, *args, **kwargs):
         response = super(SaleViewSet, self).create(request, *args, **kwargs)
         
-        # access sale  
         sale = Sale.objects.get(id=response.data['id'])
-        # to decrease the quantity of Product 
         product = sale.product
+
         if sale.quantity_sold <= product.quantity:
             product.quantity -= sale.quantity_sold
-            # to increase the total_revenue of Company
             company = Company.objects.get(id=1)
             company.total_revenue += sale.quantity_sold * sale.product.price
             
@@ -56,17 +53,15 @@ class SaleViewSet(viewsets.ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         try:
-            # Acessa o objeto Sale que será excluído
             instance = self.get_object()
             
-            # Guarda as informações necessárias antes de deletar a Sale
             product = instance.product
             quantity_sold = instance.quantity_sold
             company = Company.objects.get(id=1)
             
-            # Atualiza as informações necessárias
             product.quantity += quantity_sold
             company.total_revenue -= quantity_sold * instance.product.price
+            
             product.save()
             company.save()
             
@@ -96,14 +91,10 @@ class CompanyFinancialViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAdminUser]
 
     def check_permissions(self, request):
-        """
-        Sobrescreve o método check_permissions() da APIView para
-        adicionar verificação de autenticação à view.
-        """
         super().check_permissions(request)
         if not request.user.is_authenticated:
             self.permission_denied(
-                request, message="Você precisa estar autenticado para acessar esta view."
+                request, message="Você precisa estar autenticado como admin para acessar esta view."
             )
         elif request.user.username != 'admin':
             self.permission_denied(

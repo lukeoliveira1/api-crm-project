@@ -22,7 +22,6 @@ from django.conf.urls.static import static
 from rest_framework import routers
 
 from crm.views import ProductViewSet, SaleViewSet, CompanyViewSet, CompanyFinancialViewSet, UserViewSet
-#routers
 
 router = routers.DefaultRouter()
 router.register('products', ProductViewSet, basename='products')
